@@ -1,0 +1,56 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function to check if the ant is still inside the circle
+def is_inside_circle(x, y, center_x, center_y, radius):
+    return (x - center_x)**2 + (y - center_y)**2 <= radius**2
+
+# Parameters
+radius = 5  # Radius of the marker-drawn circle
+center_x, center_y = 0, 0  # Center of the circle
+steps = 1000  # Number of steps the ant will take
+step_size = 0.1  # How far the ant moves per step
+
+# Initial position of the ant (starting at the center)
+ant_x, ant_y = center_x, center_y
+
+# Lists to track the ant's path
+path_x = [ant_x]
+path_y = [ant_y]
+
+# Simulating the random movement of the ant
+for _ in range(steps):
+    # Generate random movement in x and y directions
+    delta_x, delta_y = np.random.uniform(-step_size, step_size, 2)
+    
+    # Update the ant's position
+    ant_x += delta_x
+    ant_y += delta_y
+    
+    # Check if the ant is still inside the circle
+    if not is_inside_circle(ant_x, ant_y, center_x, center_y, radius):
+        print(f"The ant got trapped at step {_} at position ({ant_x:.2f}, {ant_y:.2f})")
+        break
+    
+    # Track the new position
+    path_x.append(ant_x)
+    path_y.append(ant_y)
+else:
+    print(f"The ant moved for {steps} steps without getting trapped.")
+
+# Plotting the circle and the ant's path
+theta = np.linspace(0, 2 * np.pi, 300)
+circle_x = center_x + radius * np.cos(theta)
+circle_y = center_y + radius * np.sin(theta)
+
+plt.figure(figsize=(6, 6))
+plt.plot(circle_x, circle_y, label="Circle boundary")
+plt.plot(path_x, path_y, label="Ant's path", color='orange')
+plt.scatter([path_x[0]], [path_y[0]], color='green', label="Starting point")
+plt.scatter([path_x[-1]], [path_y[-1]], color='red', label="End point (trapped)")
+plt.xlim(-radius-1, radius+1)
+plt.ylim(-radius-1, radius+1)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.title("Ant's Movement in a Marker-Drawn Circle")
+plt.legend()
+plt.show()
